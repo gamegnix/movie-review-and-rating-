@@ -43,7 +43,12 @@ app.use((req, res) => {
 });
 
 // start server
-app.listen(config.port, () => {
-  console.log(`Server running on port ${config.port}`);
-  console.log(`Environment: ${config.nodeEnv}`);
-});
+// For Vercel, export the app instead of listening
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  app.listen(config.port, () => {
+    console.log(`Server running on port ${config.port}`);
+    console.log(`Environment: ${config.nodeEnv}`);
+  });
+}
