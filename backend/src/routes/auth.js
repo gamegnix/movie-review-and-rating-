@@ -5,31 +5,30 @@ const User = require("../models/User");
 const { authenticateToken } = require("../middleware/auth");
 const router = express.Router();
 
-// Helper function to sanitize user object (remove sensitive data)
+// helper to remove password from user object
 const sanitizeUser = (user) => {
   const userObj = user.toObject ? user.toObject() : user;
   const { passwordHash, __v, ...sanitized } = userObj;
   return sanitized;
 };
 
-// Helper function to validate email format
+// check if email is valid format
 const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
-// Helper function to validate password strength
+// check password length
 const isValidPassword = (password) => {
-  // At least 6 characters
   return password && password.length >= 6;
 };
 
-// Register
+// Register endpoint
 router.post("/register", async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
-    // Validation
+    // validation
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
     }
@@ -44,23 +43,23 @@ router.post("/register", async (req, res) => {
         .json({ error: "Password must be at least 6 characters long" });
     }
 
-    // Check if user already exists
+    // check if email already exists
     const existing = await User.findOne({ email: email.toLowerCase() });
     if (existing) {
       return res.status(400).json({ error: "Email already exists" });
     }
 
-    // Hash password
+    // hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Create user
+    // create user
     const user = await User.create({
       email: email.toLowerCase(),
       passwordHash,
       name: name || "",
     });
 
-    // Generate token
+    // generate token
     const secret = process.env.JWT_SECRET || "your-secret-key-change-in-production";
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
@@ -68,7 +67,6 @@ router.post("/register", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // Return sanitized user data
     res.status(201).json({
       message: "User registered successfully",
       user: sanitizeUser(user),
@@ -77,12 +75,11 @@ router.post("/register", async (req, res) => {
   } catch (err) {
     console.error("Register error:", err);
     
-    // Handle duplicate key error
+    // handle duplicate email error
     if (err.code === 11000) {
       return res.status(400).json({ error: "Email already exists" });
     }
     
-    // Handle validation errors
     if (err.name === "ValidationError") {
       return res.status(400).json({ error: err.message });
     }
@@ -91,29 +88,28 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login
+// Login endpoint
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validation
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
     }
 
-    // Find user
+    // find user by email
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Verify password
+    // check password
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Generate token
+    // create token
     const secret = process.env.JWT_SECRET || "your-secret-key-change-in-production";
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
@@ -121,7 +117,6 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // Return sanitized user data
     res.json({
       message: "Login successful",
       user: sanitizeUser(user),
@@ -133,7 +128,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Get current user (protected route)
+// Get current user (protected)
 router.get("/me", authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -150,7 +145,7 @@ router.get("/me", authenticateToken, async (req, res) => {
   }
 });
 
-// Update user profile (protected route)
+// Update profile (protected)
 router.put("/profile", authenticateToken, async (req, res) => {
   try {
     const { name, theme } = req.body;
@@ -196,7 +191,7 @@ router.put("/profile", authenticateToken, async (req, res) => {
   }
 });
 
-// Change password (protected route)
+// Change password (protected)
 router.put("/password", authenticateToken, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -213,13 +208,13 @@ router.put("/password", authenticateToken, async (req, res) => {
         .json({ error: "New password must be at least 6 characters long" });
     }
 
-    // Find user
+    // find user
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Verify current password
+    // check current password
     const isCurrentPasswordValid = await bcrypt.compare(
       currentPassword,
       user.passwordHash
@@ -228,10 +223,10 @@ router.put("/password", authenticateToken, async (req, res) => {
       return res.status(401).json({ error: "Current password is incorrect" });
     }
 
-    // Hash new password
+    // hash new password
     const newPasswordHash = await bcrypt.hash(newPassword, 10);
 
-    // Update password
+    // update password
     user.passwordHash = newPasswordHash;
     await user.save();
 
@@ -242,7 +237,7 @@ router.put("/password", authenticateToken, async (req, res) => {
   }
 });
 
-// Verify token (protected route)
+// Verify token (protected)
 router.get("/verify", authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);

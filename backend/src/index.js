@@ -5,7 +5,7 @@ const config = require("./config");
 
 const app = express();
 
-// Middleware
+// middleware
 app.use(express.json());
 app.use(
   cors({
@@ -14,22 +14,22 @@ app.use(
   })
 );
 
-// Health check
+// health check
 app.get("/api/health", (req, res) => {
   res.json({ ok: true, timestamp: new Date().toISOString() });
 });
 
-// MongoDB connection
+// connect to mongodb
 mongoose
   .connect(config.mongoURI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Routes
+// routes
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
 
-// Error handling middleware
+// error handling
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   res.status(err.status || 500).json({
@@ -42,7 +42,7 @@ app.use((req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 
-// Start server
+// start server
 app.listen(config.port, () => {
   console.log(`Server running on port ${config.port}`);
   console.log(`Environment: ${config.nodeEnv}`);

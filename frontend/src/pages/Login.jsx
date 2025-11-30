@@ -12,7 +12,7 @@ function Login() {
   const { login, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
-  // Redirect if already logged in
+  // if already logged in, go to movies page
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/movies')
@@ -24,13 +24,19 @@ function Login() {
     setError('')
     setLoading(true)
 
-    const result = await login(email, password)
-    setLoading(false)
-
-    if (result.success) {
-      navigate('/movies')
-    } else {
-      setError(result.error)
+    try {
+      const result = await login(email, password)
+      
+      if (result.success) {
+        navigate('/movies')
+      } else {
+        setError(result.error)
+      }
+    } catch (err) {
+      setError('Something went wrong')
+      console.log('Login error:', err)
+    } finally {
+      setLoading(false)
     }
   }
 

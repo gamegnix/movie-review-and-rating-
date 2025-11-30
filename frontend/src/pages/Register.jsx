@@ -14,7 +14,6 @@ function Register() {
   const { register, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
-  // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/movies')
@@ -25,26 +24,33 @@ function Register() {
     e.preventDefault()
     setError('')
 
-    // Check if passwords match
+    // check passwords match
     if (password !== confirmPassword) {
       setError('Passwords do not match')
       return
     }
 
-    // Check password length
+    // password must be at least 6 chars
     if (password.length < 6) {
       setError('Password must be at least 6 characters long')
       return
     }
 
     setLoading(true)
-    const result = await register(email, password, name)
-    setLoading(false)
-
-    if (result.success) {
-      navigate('/movies')
-    } else {
-      setError(result.error)
+    
+    try {
+      const result = await register(email, password, name)
+      
+      if (result.success) {
+        navigate('/movies')
+      } else {
+        setError(result.error)
+      }
+    } catch (err) {
+      setError('Something went wrong')
+      console.log('Register error:', err)
+    } finally {
+      setLoading(false)
     }
   }
 

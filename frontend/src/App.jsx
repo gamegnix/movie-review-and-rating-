@@ -23,6 +23,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                {/* Protected routes - need to be logged in */}
                 <Route
                   path="/movies"
                   element={
@@ -47,6 +48,7 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                {/* catch all - redirect to home if route not found */}
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </main>

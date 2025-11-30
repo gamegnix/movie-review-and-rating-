@@ -1,10 +1,9 @@
 import { createContext, useState, useContext, useEffect } from 'react'
 import api from '../services/api'
 
-// Create context for authentication
+// context for auth stuff
 const AuthContext = createContext()
 
-// Custom hook to use auth context
 export const useAuth = () => {
   const context = useContext(AuthContext)
   if (!context) {
@@ -13,11 +12,10 @@ export const useAuth = () => {
   return context
 }
 
-// Auth provider component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(() => {
-    // Get token from localStorage if it exists
+    // get token from storage
     if (typeof window !== 'undefined') {
       return localStorage.getItem('token')
     }
@@ -25,19 +23,20 @@ export const AuthProvider = ({ children }) => {
   })
   const [loading, setLoading] = useState(true)
 
-  // Function to fetch user data from API
+  // get user info from api
   const fetchUser = async () => {
     try {
       const response = await api.get('/auth/me')
       setUser(response.data.user)
     } catch (error) {
       console.error('Failed to fetch user:', error)
+      // if error, just set loading to false
     } finally {
       setLoading(false)
     }
   }
 
-  // Check if user is logged in when component mounts
+  // check if logged in when page loads
   useEffect(() => {
     if (token) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`
@@ -47,13 +46,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token])
 
-  // Login function
+  // login function
   const login = async (email, password) => {
     try {
       const response = await api.post('/auth/login', { email, password })
       const { user, token } = response.data
       
-      // Save token to localStorage
+      // save to localStorage
       localStorage.setItem('token', token)
       setToken(token)
       setUser(user)
@@ -68,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Register function
+  // register function
   const register = async (email, password, name) => {
     try {
       const response = await api.post('/auth/register', {
@@ -78,7 +77,6 @@ export const AuthProvider = ({ children }) => {
       })
       const { user, token } = response.data
       
-      // Save token to localStorage
       localStorage.setItem('token', token)
       setToken(token)
       setUser(user)
@@ -93,7 +91,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Logout function
+  // logout
   const logout = () => {
     localStorage.removeItem('token')
     setToken(null)
@@ -101,7 +99,7 @@ export const AuthProvider = ({ children }) => {
     delete api.defaults.headers.common['Authorization']
   }
 
-  // Update profile function
+  // update profile
   const updateProfile = async (updates) => {
     try {
       const response = await api.put('/auth/profile', updates)
@@ -115,7 +113,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Change password function
+  // change password
   const changePassword = async (currentPassword, newPassword) => {
     try {
       await api.put('/auth/password', {
@@ -131,7 +129,6 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Value to provide to context
   const value = {
     user,
     token,

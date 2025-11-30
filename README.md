@@ -4,13 +4,13 @@ A full-stack web application for reviewing and rating movies. Users can register
 
 ## Features
 
-- 🔐 User Authentication (Register, Login, Logout)
-- 🎬 Movie Browsing
-- ⭐ Movie Rating System (1-5 stars)
-- 📝 Write and View Reviews
-- 👤 User Profile Management
-- 🌓 Light/Dark Theme Toggle
-- 📱 Responsive Design
+- User Authentication (Register, Login, Logout)
+- Movie Browsing
+- Movie Rating System (1-5 stars)
+- Write and View Reviews
+- User Profile Management
+- Light/Dark Theme Toggle
+- Responsive Design
 
 ## Tech Stack
 
@@ -61,7 +61,7 @@ movie review and rating/
 ### Prerequisites
 - Node.js (v14 or higher)
 - MongoDB (local or cloud)
-- npm or yarn
+- npm
 
 ### Backend Setup
 
@@ -129,20 +129,9 @@ movie review and rating/
 5. Register a new account or login
 6. Browse movies and write reviews!
 
-## Environment Variables
+## Notes
 
-### Backend (.env)
-- `JWT_SECRET` - Secret key for JWT tokens
-- `MONGODB_URI` - MongoDB connection string
-- `PORT` - Server port (default: 4000)
-- `NODE_ENV` - Environment (development/production)
-- `FRONTEND_URL` - Frontend URL for CORS
-
-## Author
-
-[Your Name]
-
-## License
-
-This project is for educational purposes.
-
+- Make sure MongoDB is running before starting the backend
+- The frontend uses a proxy to communicate with the backend
+- JWT tokens are stored in localStorage
+- Theme preferences are saved in user profile
