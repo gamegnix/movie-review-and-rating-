@@ -1,0 +1,117 @@
+.profile {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.profile h1 {
+  margin-bottom: 2rem;
+}
+
+.profile-sections {
+  display: grid;
+  gap: 2rem;
+}
+
+.profile-section {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+.profile-section h2 {
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-group input.disabled-input {
+  background-color: var(--bg-secondary);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-group small {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.profile-button {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: flex-start;
+}
+
+.profile-button:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.profile-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.success-message {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--success);
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--error);
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .profile-section {
+    padding: 1.5rem;
+  }
+}
+
